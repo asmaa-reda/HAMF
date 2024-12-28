@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  selenium-container:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./data:/app/data  # Shared volume for data
+
+  custom-python-collector:
+    build:
+      context: ./custom-collector
+      dockerfile: Dockerfile
+    container_name: python-collector
+    volumes:
+      - ./data:/app/data
+    environment:
+      - API_KEYS=your_api_keys
+
+  spark-container:
+    image: bitnami/spark
+    container_name: spark
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+
+  pandas-cleaner:
+    build:
+      context: ./pandas-cleaner
+      dockerfile: Dockerfile
+    container_name: pandas-cleaner
+    volumes:
+      - ./data:/app/data
+      
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.0
+    ports:
+      - "5044:5044"
+      - "9600:9600" # Prometheus metrics
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config:/usr/share/logstash/config
+      - ./logstash/plugins:/usr/share/logstash/plugins
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
