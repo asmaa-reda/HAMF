@@ -1,8 +1,7 @@
 
-# Hybrid Approach Maintenance Framework (HAMF)
+# Hybrid Approach MLOps Framework (HAMF)
 
-The Hybrid Approach Maintenance Framework (HAMF) is a Python-based framework designed to maintain and enhance phishing detection models.
-As Practical implementation of Research By Asmaa Reda
+The Hybrid Approach MLOps Framework (HAMF) is a Python-based framework designed to  automate and standardize essential processes across the AI lifecycle, including model development, testing, proactive retraining, deployment, and infrastructure management. As Practical implementation of Research By Asmaa Reda
 
 ## Features
 - Real-time and offline data collection
